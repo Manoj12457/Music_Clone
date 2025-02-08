@@ -16,7 +16,7 @@ shufflebtn.addEventListener('click',()=>{
 let powerbtn=document.getElementById('powerbtn')
 
 let csongIndex=0;
-let psongIndex=0;
+let psongIndex=new Array();
 
 let mainPlay=document.getElementById('mainPlay')
 
@@ -48,7 +48,9 @@ function nextSong(songIndex){
     }
     if(audioElement!=undefined){
         audioElement.pause()
-        audioElement.remove
+        console.log(audioElement)
+        audioElement=undefined
+        console.log(audioElement)
     }
     csongIndex=songIndex
     audioElement=new Audio(songs[songIndex].filePath)
@@ -60,17 +62,17 @@ function nextSong(songIndex){
         progress=parseInt((audioElement.currentTime/audioElement.duration)*100);
         myProgressBar.value=progress
         if(audioElement.currentTime==audioElement.duration){
-            audioElement.remove()
+            //audioElement.remove()
             if(shuffle){
                 const numbers = [0,1,2,3];
                 const nsongIndex = numbers[Math.floor(Math.random() * numbers.length)];
                 //console.log(randomElement); // e.g., 30
-                psongIndex=csongIndex
+                psongIndex=[...psongIndex,csongIndex]
                 nextSong(nsongIndex)
 
             }
             else{
-                psongIndex=csongIndex
+                psongIndex=[...psongIndex,csongIndex]
                 nextSong(songIndex+1)
             }
         }
@@ -93,10 +95,10 @@ mainPlay.addEventListener('click',()=>{
         gif.style.opacity=0;
         songInfo1.innerHTML=''
     } 
-    audioElement.addEventListener('timeupdate',()=>{
-        progress=parseInt((audioElement.currentTime/audioElement.duration)*100);
-        myProgressBar.value=progress 
-    })
+    // audioElement.addEventListener('timeupdate',()=>{
+    //     progress=parseInt((audioElement.currentTime/audioElement.duration)*100);
+    //     myProgressBar.value=progress 
+    // })
 })
 
 
@@ -106,33 +108,37 @@ myProgressBar.addEventListener('change',()=>{
 
 powerbtn.addEventListener('click',()=>{
     audioElement.pause()
-    audioElement.remove()
+    console.log(audioElement)
+    audioElement=undefined
+    console.log(audioElement)
     mainPlay.src='icons/play-button.png'
     gif.style.opacity=0;
     songInfo1.innerHTML=''
+    psongIndex=new Array()
+    myProgressBar.value=0
 })
 
 play0.addEventListener('click',()=>{
     let songIndex=parseInt(play0.getAttribute('value'))
-    psongIndex=csongIndex
+    psongIndex=[...psongIndex,csongIndex]
     nextSong(songIndex)
 })
 
 play1.addEventListener('click',()=>{
     let songIndex=parseInt(play1.getAttribute('value'))
-    psongIndex=csongIndex
+    psongIndex=[...psongIndex,csongIndex]
     nextSong(songIndex)
 })
 
 play2.addEventListener('click',()=>{
     let songIndex=parseInt(play2.getAttribute('value'))
-    psongIndex=csongIndex
+    psongIndex=[...psongIndex,csongIndex]
     nextSong(songIndex)
 })
 
 play3.addEventListener('click',()=>{
     let songIndex=parseInt(play3.getAttribute('value'))
-    psongIndex=csongIndex
+    psongIndex=[...psongIndex,csongIndex]
     nextSong(songIndex)
 })
 
@@ -141,21 +147,23 @@ skip.addEventListener('click',()=>{
         const numbers = [0,1,2,3];
         const nsongIndex = numbers[Math.floor(Math.random() * numbers.length)];
         //console.log(randomElement); // e.g., 30
-        psongIndex=csongIndex
+        //console.log(psongIndex)
+        psongIndex=[...psongIndex,csongIndex]
         nextSong(nsongIndex)
 
     }
     else{
-        psongIndex=csongIndex
+        psongIndex=[...psongIndex,csongIndex]
         nextSong(csongIndex+1)
     }
 })
 
 rewind.addEventListener('click',()=>{
-    let psongIndex2=psongIndex
-    psongIndex-=1
-    if(psongIndex<0){
-        psongIndex=3
+    let psongIndex2=psongIndex.pop()
+    //psongIndex-=1
+    if(psongIndex2===undefined){
+        const numbers=[1,2,3,4]
+        psongIndex2=numbers[Math.floor(Math.random() * numbers.length)];
     }
     nextSong(psongIndex2)
 })
